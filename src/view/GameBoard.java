@@ -113,6 +113,7 @@ public class GameBoard extends JFrame {
 		gb.setVisible(true);
 		Map m = new Map();
 		gb.update(m);
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		while(true){
 			String line = "";
@@ -136,8 +137,5 @@ public class GameBoard extends JFrame {
 	        }
 			gb.update(m);
 		}
-		
-		
-		
 	}
 }

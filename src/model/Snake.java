@@ -21,9 +21,9 @@ public class Snake {
 			positions.add(new Coordinate(0,0));
 	}
 	
-	public Snake(int len, int dir){
+	public Snake(int len){
 		setLength(len);
-		setDirection(dir);
+		setDirection(RIGHT);
 		setPositions(new ArrayList<Coordinate>());
 		for (int i = 0; i < getLength(); ++i)
 			positions.add(new Coordinate(0,0));

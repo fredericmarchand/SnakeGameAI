@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class Map {
 	
 	public static final int EMPTY      = 0;
@@ -9,6 +11,11 @@ public class Map {
 	public static final int FOOD	   = 4;
 	public static final int OBSTACLE   = 5;
 	public static final int BORDER     = 6;
+	
+	public static final int INVALID_MOVE   = 0;
+	public static final int VALID_MOVE     = 1;
+	public static final int FOOD_MOVE      = 2;
+	
 	
 	private int rows; //amount of squares
 	private int columns;  //amount of squares
@@ -20,7 +27,7 @@ public class Map {
 		setRows(20);
 		setColumns(20);
 		setMap(new int[20][20]);
-		cobra = new Snake();
+		cobra = new Snake(7);
 		for (int x = 0; x < 20; ++x) {
 			for (int y = 0; y < 20; ++y) {
 				if (x == 0 || y == 0 || x == rows-1 || y == columns-1) {
@@ -32,6 +39,8 @@ public class Map {
 			}
 		}
 		initSnake();
+		generateObstacles(5);
+		generateFoodItem();
 	}
 	
 	public Map(int rows, int cols){
@@ -50,6 +59,8 @@ public class Map {
 			}
 		}
 		initSnake();
+		generateObstacles(10);
+		generateFoodItem();
 	}
 	
 	public int getRows() {
@@ -76,23 +87,94 @@ public class Map {
 		this.map = map;
 	}
 	
-	//Only works for size 5 for now
 	public void initSnake() {
+		int decrement = 0;
+		
 		cobra.getPositions().set(0, new Coordinate(rows/2-1, columns/2+1));
 		map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()] = SNAKE_HEAD;
 		
-		cobra.getPositions().set(1, new Coordinate(rows/2-1, columns/2));
-		cobra.getPositions().set(2, new Coordinate(rows/2-1, columns/2-1));
-		cobra.getPositions().set(3, new Coordinate(rows/2-1, columns/2-2));
-		map[cobra.getPositions().get(1).getRow()][cobra.getPositions().get(1).getCol()] = SNAKE_BODY;
-		map[cobra.getPositions().get(2).getRow()][cobra.getPositions().get(2).getCol()] = SNAKE_BODY;
-		map[cobra.getPositions().get(3).getRow()][cobra.getPositions().get(3).getCol()] = SNAKE_BODY;
+		for (int i = 1; i <= cobra.getLength()-2; ++i) {
+			cobra.getPositions().set(i, new Coordinate(rows/2-1, columns/2 - decrement));
+			decrement++;
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = SNAKE_BODY;
+		}
 		
-		cobra.getPositions().set(4, new Coordinate(rows/2-1, columns/2-3));
-		map[cobra.getPositions().get(4).getRow()][cobra.getPositions().get(4).getCol()] = SNAKE_TAIL;	
+		cobra.getPositions().set(cobra.getLength()-1, new Coordinate(rows/2-1, columns/2-decrement));
+		map[cobra.getPositions().get(cobra.getLength()-1).getRow()][cobra.getPositions().get(cobra.getLength()-1).getCol()] = SNAKE_TAIL;	
+	}
+	
+	public static int randInt(int min, int max) {
+	    Random rand = new Random();
+	    int randomNum = rand.nextInt((max - min) + 1) + min;
+	    return randomNum;
+	}
+	
+	public void generateObstacles(int percentage) {
+		if (percentage > 50) return;
+		
+		int totalCells = getRows() * getColumns();
+		
+		for (int i = 0; i < (totalCells * percentage / 100); ++i)
+		{
+			int randRow = 0;
+			int randCol = 0;
+			while (map[randRow][randCol] != EMPTY)
+			{
+ 				randRow = randInt(0, getRows()-1);
+				randCol = randInt(0, getColumns()-1);
+			}
+			
+			map[randRow][randCol] = OBSTACLE;
+		}
+	}
+	
+	public void generateFoodItem() {
+		int randRow = 0;
+		int randCol = 0;
+		while (map[randRow][randCol] != EMPTY)
+		{
+			randRow = randInt(0, getRows()-1);
+			randCol = randInt(0, getColumns()-1);
+		}
+		map[randRow][randCol] = FOOD;
+	}
+	
+	public int validMove(int direction)
+	{
+		switch (direction) {
+			case Snake.UP:
+				if (map[cobra.getPositions().get(0).getRow()-1][cobra.getPositions().get(0).getCol()] == FOOD)
+					return FOOD_MOVE;
+				if (map[cobra.getPositions().get(0).getRow()-1][cobra.getPositions().get(0).getCol()] == EMPTY)
+					return VALID_MOVE;
+				break;
+			case Snake.DOWN:
+				if(map[cobra.getPositions().get(0).getRow()+1][cobra.getPositions().get(0).getCol()] == FOOD)
+					return FOOD_MOVE;
+				if(map[cobra.getPositions().get(0).getRow()+1][cobra.getPositions().get(0).getCol()] == EMPTY)
+					return VALID_MOVE;
+				break;
+			case Snake.RIGHT:
+				if(map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()+1] == FOOD)
+					return FOOD_MOVE;
+				if(map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()+1] == EMPTY)
+					return VALID_MOVE;
+				break;
+			case Snake.LEFT:
+				if(map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()-1] == FOOD)
+					return FOOD_MOVE;
+				if(map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()-1] == EMPTY)
+					return VALID_MOVE;
+				break;
+		}
+		return INVALID_MOVE;
 	}
 	
 	public void moveSnakeInDirection(int direction) {
+		int moveType;
+		if ((moveType = validMove(direction)) == INVALID_MOVE)
+			return;
+		
 		this.clearSnake();
 		
 		for (int i = cobra.getPositions().size()-1; i > 0; --i) {
@@ -115,22 +197,31 @@ public class Map {
 		}
 
 		this.positionSnake();
+		if (moveType == FOOD_MOVE)
+			generateFoodItem();
 	}
 	
 	public void clearSnake() {
+		
 		map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()] = EMPTY;
-		map[cobra.getPositions().get(1).getRow()][cobra.getPositions().get(1).getCol()] = EMPTY;
-		map[cobra.getPositions().get(2).getRow()][cobra.getPositions().get(2).getCol()] = EMPTY;
-		map[cobra.getPositions().get(3).getRow()][cobra.getPositions().get(3).getCol()] = EMPTY;
-		map[cobra.getPositions().get(4).getRow()][cobra.getPositions().get(4).getCol()] = EMPTY;	
+		for (int i = 1; i <= cobra.getLength()-2; ++i)
+		{
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = EMPTY;
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = EMPTY;
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = EMPTY;
+		}
+		map[cobra.getPositions().get(cobra.getLength()-1).getRow()][cobra.getPositions().get(cobra.getLength()-1).getCol()] = EMPTY;	
 	}
 	
 	public void positionSnake() {
 		map[cobra.getPositions().get(0).getRow()][cobra.getPositions().get(0).getCol()] = SNAKE_HEAD;
-		map[cobra.getPositions().get(1).getRow()][cobra.getPositions().get(1).getCol()] = SNAKE_BODY;
-		map[cobra.getPositions().get(2).getRow()][cobra.getPositions().get(2).getCol()] = SNAKE_BODY;
-		map[cobra.getPositions().get(3).getRow()][cobra.getPositions().get(3).getCol()] = SNAKE_BODY;
-		map[cobra.getPositions().get(4).getRow()][cobra.getPositions().get(4).getCol()] = SNAKE_TAIL;	
+		for (int i = 1; i <= cobra.getLength()-2; ++i)
+		{
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = SNAKE_BODY;
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = SNAKE_BODY;
+			map[cobra.getPositions().get(i).getRow()][cobra.getPositions().get(i).getCol()] = SNAKE_BODY;
+		}
+		map[cobra.getPositions().get(cobra.getLength()-1).getRow()][cobra.getPositions().get(cobra.getLength()-1).getCol()] = SNAKE_TAIL;	
 	}
 	
 	public static void main(String args[]){
