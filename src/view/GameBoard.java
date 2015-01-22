@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -111,10 +112,32 @@ public class GameBoard extends JFrame {
 		GameBoard gb = new GameBoard("Snake Game", 20, 20);
 		gb.setVisible(true);
 		Map m = new Map();
-		
-		m.moveSnakeInDirection(Snake.UP);
-		m.moveSnakeInDirection(Snake.RIGHT);
 		gb.update(m);
+		Scanner sc = new Scanner(System.in);
+		while(true){
+			String line = "";
+	        while(sc.hasNextLine()) {
+	        	line = sc.next(); 
+	        	break;
+	        }
+	        switch (line.charAt(0)){
+		        case 'w':
+		        	m.moveSnakeInDirection(Snake.UP);
+		        	break;
+		        case 'a':
+		        	m.moveSnakeInDirection(Snake.LEFT);
+		        	break;
+		        case 's':
+		        	m.moveSnakeInDirection(Snake.DOWN);
+		        	break;
+		        case 'd':
+		        	m.moveSnakeInDirection(Snake.RIGHT);
+		        	break;
+	        }
+			gb.update(m);
+		}
+		
+		
 		
 	}
 }

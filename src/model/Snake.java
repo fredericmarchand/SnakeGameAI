@@ -11,13 +11,11 @@ public class Snake {
 	
 	private int length;
 	private int direction;
-	private boolean isMoving;
 	private ArrayList<Coordinate> positions;
 	
 	public Snake() {
 		setLength(5);
 		setDirection(RIGHT);
-		setMoving(false);
 		setPositions(new ArrayList<Coordinate>());
 		for (int i = 0; i < 5; ++i)
 			positions.add(new Coordinate(0,0));
@@ -26,7 +24,6 @@ public class Snake {
 	public Snake(int len, int dir){
 		setLength(len);
 		setDirection(dir);
-		setMoving(false);
 		setPositions(new ArrayList<Coordinate>());
 		for (int i = 0; i < getLength(); ++i)
 			positions.add(new Coordinate(0,0));
@@ -54,13 +51,5 @@ public class Snake {
 
 	public void setPositions(ArrayList<Coordinate> positions) {
 		this.positions = positions;
-	}
-
-	public boolean isMoving() {
-		return isMoving;
-	}
-
-	public void setMoving(boolean isMoving) {
-		this.isMoving = isMoving;
 	}
 }
