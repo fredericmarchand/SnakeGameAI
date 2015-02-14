@@ -79,6 +79,10 @@ public class Map {
 		this.columns = cols;
 	}
 	
+	public Snake getSnake() {
+		return cobra;
+	}
+	
 	public int[][] getMap() {
 		return map;
 	}
@@ -172,7 +176,7 @@ public class Map {
 	
 	public void moveSnakeInDirection(int direction) {
 		int moveType;
-		if ((moveType = validMove(direction)) == INVALID_MOVE)
+		if ((moveType = validMove(direction)) == INVALID_MOVE || moveType == -1)
 			return;
 		
 		this.clearSnake();

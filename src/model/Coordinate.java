@@ -30,4 +30,26 @@ public class Coordinate {
 	public void setCol(int col) {
 		this.col = col;
 	}
+	
+	public String toString() {
+		return "(" + getRow() + ", " + getCol() + ")";
+	}
+	
+	public static int getDirection(Coordinate c1, Coordinate c2) {
+		int rowDiff = c2.getRow() - c1.getRow();
+		int colDiff = c2.getCol() - c1.getCol();
+		
+		if (rowDiff == -1)
+			return Snake.UP;
+		if (rowDiff == 1)
+			return Snake.DOWN;
+		if (colDiff == -1)
+			return Snake.LEFT;
+		if (colDiff == 1)
+			return Snake.RIGHT;
+		
+		System.out.println(c1.toString() + " vs " + c1.toString());
+		return -1;
+		
+	}
 }

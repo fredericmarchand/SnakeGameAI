@@ -5,7 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.util.Scanner;
+//import java.util.LinkedList;
+//import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,8 +14,11 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+//import controller.Search;
+//import model.Coordinate;
 import model.Map;
-import model.Snake;
+//import model.Node;
+//import model.Snake;
 
 public class GameBoard extends JFrame {
 
@@ -108,12 +112,31 @@ public class GameBoard extends JFrame {
 		GUI[x][y].setForeground(EMPTY_COLOR);
 	}
 	
-	public static void main(String args[]) {
-		GameBoard gb = new GameBoard("Snake Game", 20, 20);
+	public static void main(String args[]) /* throws InterruptedException */ {
+		/*GameBoard gb = new GameBoard("Snake Game", 20, 20);
 		gb.setVisible(true);
 		Map m = new Map();
 		gb.update(m);
-		@SuppressWarnings("resource")
+		
+		for (;;) {
+			
+			LinkedList<Coordinate> path = Search.DepthFirstSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m);
+			
+			for (Coordinate c: path) {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				m.moveSnakeInDirection(Coordinate.getDirection(m.getSnake().getPositions().get(0), c));
+				gb.update(m);
+			}
+		}*/
+				
+		
+		
+		//Manual controls
+		/*@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		while(true){
 			String line = "";
@@ -136,6 +159,6 @@ public class GameBoard extends JFrame {
 		        	break;
 	        }
 			gb.update(m);
-		}
+		}*/
 	}
 }
