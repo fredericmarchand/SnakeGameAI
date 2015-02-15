@@ -141,8 +141,28 @@ public class Search {
 		return ((rowdiff + coldiff));
 	}
 	
-	public static LinkedList<Coordinate> AStarSearch(Node startState, Map map){
-		Comparator<Node> comparator = new ManhattanNodeComparator(map.getFoodCoordinates());
+	public static int euclideanHeuristicEstimator(Coordinate food, Coordinate node) {
+		int rowDist1 = Math.abs(node.getRow() - food.getRow());
+		int colDist1 = Math.abs(node.getCol() - food.getCol());
+
+		return (int)(Math.sqrt(rowDist1 + colDist1));
+	}
+	
+	public static int estimator(Coordinate food, Coordinate node, int heuristic) {
+		if (heuristic == App.ASTAR1)
+			return manhattanHeuristicEstimator(food, node);
+		else if (heuristic == App.ASTAR2)
+			return euclideanHeuristicEstimator(food, node);
+		return 0;
+	}
+	
+	public static LinkedList<Coordinate> AStarSearch(Node startState, Map map, int heuristic){
+		Comparator<Node> comparator = null;
+		if (heuristic == App.ASTAR1)
+			comparator = new ManhattanNodeComparator(map.getFoodCoordinates());
+		else if (heuristic == App.ASTAR2)
+			comparator = new EuclideanNodeComparator(map.getFoodCoordinates());
+		
 		PriorityQueue<Node> openList = new PriorityQueue<Node>(map.getRows(), comparator);
 		LinkedList<Node> closedList = new LinkedList<Node>();
 		
@@ -179,20 +199,20 @@ public class Search {
 			
 			//Generate successors
 			successors.add(new Node(currNode.getRow()+1, currNode.getCol()  , 
-							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
-							new Coordinate(currNode.getRow()+1, currNode.getCol())), 
+							estimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow()+1, currNode.getCol()), heuristic), 
 							currNode.getSteps()+1, currNode));
 			successors.add(new Node(currNode.getRow()-1, currNode.getCol()  , 
-							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
-							new Coordinate(currNode.getRow()-1, currNode.getCol())), 
+							estimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow()-1, currNode.getCol()), heuristic), 
 							currNode.getSteps()+1, currNode));
 			successors.add(new Node(currNode.getRow()  , currNode.getCol()+1, 
-							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
-							new Coordinate(currNode.getRow(), currNode.getCol()+1)), 
+							estimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow(), currNode.getCol()+1), heuristic), 
 							currNode.getSteps()+1, currNode));
 			successors.add(new Node(currNode.getRow()  , currNode.getCol()-1, 
-							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
-							new Coordinate(currNode.getRow(), currNode.getCol()-1)), 
+							estimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow(), currNode.getCol()-1), heuristic), 
 							currNode.getSteps()+1, currNode));
 			
 			closedList.add(currNode); //place in closed

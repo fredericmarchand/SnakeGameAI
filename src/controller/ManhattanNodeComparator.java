@@ -29,5 +29,4 @@ public class ManhattanNodeComparator implements Comparator<Node> {
 	public void setFood(Coordinate food) {
 		this.food = food;
 	}
-
 }

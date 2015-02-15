@@ -9,11 +9,11 @@ import view.GameBoard;
 
 public class App {
 
-	private static final int BREADTH 	= 1;
-	private static final int DEPTH 		= 2;
-	private static final int ASTAR1 	= 3;
-	private static final int ASTAR2 	= 4;
-	private static final int ASTAR3 	= 5;
+	public static final int BREADTH 	= 1;
+	public static final int DEPTH 		= 2;
+	public static final int ASTAR1 		= 3;
+	public static final int ASTAR2 		= 4;
+	public static final int ASTAR3 		= 5;
 	
 	//arg[0] = 1 -> breadth first
 	//arg[0] = 2 -> depth first
@@ -37,9 +37,9 @@ public class App {
 				path = Search.DepthFirstSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m);
 				break;
 			case ASTAR1:
-				path = Search.AStarSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m);
 			case ASTAR2:
 			case ASTAR3:
+				path = Search.AStarSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m, search);
 				break;
 			}
 			
