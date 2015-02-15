@@ -20,6 +20,7 @@ public class Map {
 	private int rows; //amount of squares
 	private int columns;  //amount of squares
 	private Snake cobra;
+	private Coordinate foodCoordinates;
 	
 	private int map[][];
 	
@@ -91,6 +92,10 @@ public class Map {
 		this.map = map;
 	}
 	
+	public Coordinate getFoodCoordinates() {
+		return foodCoordinates;
+	}
+	
 	public void initSnake() {
 		int decrement = 0;
 		
@@ -141,6 +146,7 @@ public class Map {
 			randCol = randInt(0, getColumns()-1);
 		}
 		map[randRow][randCol] = FOOD;
+		foodCoordinates = new Coordinate(randRow, randCol);
 	}
 	
 	public int validMove(int direction)

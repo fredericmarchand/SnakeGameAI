@@ -9,10 +9,22 @@ public class Node {
 	private Node previous;
 	private int row;
 	private int col;
+	private int estimate;
+	private int steps;
 	
 	public Node(int row, int col, Node previous) {
 		this.setRow(row);
 		this.setCol(col);
+		steps = 0;
+		estimate = 0;
+		this.previous = previous;
+	}
+	
+	public Node(int row, int col, int estimate, int steps, Node previous) {
+		this.setRow(row);
+		this.setCol(col);
+		this.setSteps(steps);
+		this.setEstimate(estimate);
 		this.previous = previous;
 	}
 
@@ -56,6 +68,22 @@ public class Node {
 		
 		Collections.reverse(path);
 		return path;
+	}
+
+	public int getSteps() {
+		return steps;
+	}
+
+	public void setSteps(int steps) {
+		this.steps = steps;
+	}
+
+	public int getEstimate() {
+		return estimate;
+	}
+
+	public void setEstimate(int estimate) {
+		this.estimate = estimate;
 	}
 	
 }

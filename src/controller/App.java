@@ -37,6 +37,7 @@ public class App {
 				path = Search.DepthFirstSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m);
 				break;
 			case ASTAR1:
+				path = Search.AStarSearch(new Node(m.getSnake().getPositions().get(0).getRow(), m.getSnake().getPositions().get(0).getCol(), null), m);
 			case ASTAR2:
 			case ASTAR3:
 				break;

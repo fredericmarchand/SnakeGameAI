@@ -1,7 +1,9 @@
 package controller;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -23,8 +25,15 @@ public class Search {
 		fringe.add(startState);
 		
 		for (;;) {
-			if (fringe.size() == 0)
-				System.out.println("empty fringe");
+			if (fringe.size() == 0) {
+				System.out.println("Empty fringe: Stuck\nExiting in 3 seconds...");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.exit(1);
+			}
 			
 			Node currNode = fringe.poll();
 			//System.out.println("currNode = " + "(" + currNode.getRow() + ", " + currNode.getCol() + ")");
@@ -56,8 +65,6 @@ public class Search {
 				continue;
 			}
 			
-			//Check for snake body positions
-
 			fringe.offer(new Node(currNode.getRow()+1, currNode.getCol()  , currNode));
 			fringe.offer(new Node(currNode.getRow()-1, currNode.getCol()  , currNode));
 			fringe.offer(new Node(currNode.getRow()  , currNode.getCol()+1, currNode));
@@ -79,8 +86,15 @@ public class Search {
 		fringe.add(startState);
 		
 		for (;;) {
-			if (fringe.size() == 0)
-				System.out.println("empty fringe");
+			if (fringe.size() == 0) {
+				System.out.println("Empty fringe: Stuck\nExiting in 3 seconds...");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.exit(1);
+			}
 			
 			Node currNode = fringe.pop();
 			//System.out.println("currNode = " + "(" + currNode.getRow() + ", " + currNode.getCol() + ")");
@@ -112,8 +126,6 @@ public class Search {
 				continue;
 			}
 			
-			//Check for snake body positions
-
 			fringe.push(new Node(currNode.getRow()+1, currNode.getCol()  , currNode));
 			fringe.push(new Node(currNode.getRow()-1, currNode.getCol()  , currNode));
 			fringe.push(new Node(currNode.getRow()  , currNode.getCol()+1, currNode));
@@ -122,8 +134,107 @@ public class Search {
 		}
 	}
 	
-	public static void AStarSearch(){
-		
+	public static int manhattanHeuristicEstimator(Coordinate food, Coordinate node) {
+		int rowdiff = Math.abs(node.getRow() - food.getRow());
+		int coldiff = Math.abs(node.getCol() - food.getCol());
+
+		return ((rowdiff + coldiff));
 	}
 	
+	public static LinkedList<Coordinate> AStarSearch(Node startState, Map map){
+		Comparator<Node> comparator = new ManhattanNodeComparator(map.getFoodCoordinates());
+		PriorityQueue<Node> openList = new PriorityQueue<Node>(map.getRows(), comparator);
+		LinkedList<Node> closedList = new LinkedList<Node>();
+		
+		for (Coordinate c: map.getSnake().getPositions()) {
+			closedList.add(new Node(c.getRow(), c.getCol(), null));	
+		}
+		closedList.remove(0);
+		
+		openList.add(startState); 
+				
+		for (;;) {
+			if (openList.isEmpty()) {
+				System.out.println("Empty openlist: Stuck\nExiting in 3 seconds...");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.exit(1);
+			}
+			
+			LinkedList<Node> successors = new LinkedList<Node>();
+			
+			Node currNode = openList.poll(); //Pick best node in open
+			
+			if (currNode.getRow() == map.getFoodCoordinates().getRow() &&
+				currNode.getCol() == map.getFoodCoordinates().getCol()) {
+				LinkedList<Coordinate> list = Node.getPath(currNode);
+				//for (Coordinate c: list) {
+				//	System.out.println(c.toString());
+				//}
+				return list;
+			}
+			
+			//Generate successors
+			successors.add(new Node(currNode.getRow()+1, currNode.getCol()  , 
+							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow()+1, currNode.getCol())), 
+							currNode.getSteps()+1, currNode));
+			successors.add(new Node(currNode.getRow()-1, currNode.getCol()  , 
+							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow()-1, currNode.getCol())), 
+							currNode.getSteps()+1, currNode));
+			successors.add(new Node(currNode.getRow()  , currNode.getCol()+1, 
+							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow(), currNode.getCol()+1)), 
+							currNode.getSteps()+1, currNode));
+			successors.add(new Node(currNode.getRow()  , currNode.getCol()-1, 
+							manhattanHeuristicEstimator(map.getFoodCoordinates(), 
+							new Coordinate(currNode.getRow(), currNode.getCol()-1)), 
+							currNode.getSteps()+1, currNode));
+			
+			closedList.add(currNode); //place in closed
+		
+			//For each successor
+			for (Node n: successors) {
+				
+				if (map.getMap()[currNode.getRow()][currNode.getCol()] == Map.BORDER ||
+					map.getMap()[currNode.getRow()][currNode.getCol()] == Map.OBSTACLE) {
+					closedList.add(currNode);
+					continue;
+				}
+				
+				boolean inOpenList = false;
+				boolean inClosedList = false;
+				for (Node o: openList) {
+					if (n.equalState(o))
+						inOpenList = true;
+				}
+				for (Node o: closedList) {
+					if (n.equalState(o))
+						inClosedList = true;
+				}
+				if (!inClosedList && !inOpenList){
+					openList.add(n);
+				}
+				else {//Found in one of the lists
+					Node existing = null;
+					for (Node o: openList) {
+						if (n.equalState(o))
+							existing = o;
+					}
+					for (Node o: closedList) {
+						if (n.equalState(o))
+							existing = o;
+					}
+					if (n.getSteps() < existing.getSteps()) { 	//If better path
+						existing.setPrevious(currNode);			//change parent pointer
+						existing.setEstimate(n.getEstimate());  //update estimate
+					}
+				}
+			}
+		}
+	}
 }
