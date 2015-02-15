@@ -15,11 +15,10 @@ public class ManhattanNodeComparator implements Comparator<Node> {
 	
 	@Override
 	public int compare(Node o1, Node o2) {
-		int rowdiff1 = Math.abs(o1.getRow() - food.getRow());
-		int coldiff1 = Math.abs(o1.getCol() - food.getCol());
-		int rowdiff2 = Math.abs(o2.getRow() - food.getRow());
-		int coldiff2 = Math.abs(o2.getCol() - food.getCol());
-		return ((rowdiff1 + coldiff1) - (rowdiff2 + coldiff2));
+		int dist1 = Search.manhattanHeuristicEstimator(food, new Coordinate(o1.getRow(), o1.getCol()));
+		int dist2 = Search.manhattanHeuristicEstimator(food, new Coordinate(o2.getRow(), o2.getCol()));
+
+		return (dist1 - dist2);
 	}
 
 	public Coordinate getFood() {

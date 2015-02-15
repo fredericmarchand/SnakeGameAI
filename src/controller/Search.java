@@ -153,6 +153,8 @@ public class Search {
 			return manhattanHeuristicEstimator(food, node);
 		else if (heuristic == App.ASTAR2)
 			return euclideanHeuristicEstimator(food, node);
+		else if (heuristic == App.ASTAR3)
+			return (manhattanHeuristicEstimator(food, node) + euclideanHeuristicEstimator(food, node)) / 2;
 		return 0;
 	}
 	
@@ -162,6 +164,8 @@ public class Search {
 			comparator = new ManhattanNodeComparator(map.getFoodCoordinates());
 		else if (heuristic == App.ASTAR2)
 			comparator = new EuclideanNodeComparator(map.getFoodCoordinates());
+		else if (heuristic == App.ASTAR3)
+			comparator = new MixedHeuristicNodeComparator(map.getFoodCoordinates());
 		
 		PriorityQueue<Node> openList = new PriorityQueue<Node>(map.getRows(), comparator);
 		LinkedList<Node> closedList = new LinkedList<Node>();
