@@ -20,14 +20,11 @@ public class App {
 	//arg[0] = 3 -> a star heuristic 1
 	//arg[0] = 4 -> a star heuristic 2
 	//arg[0] = 5 -> a star heuristic mix
-	//arg[1] = dimension (i.e., 20 -> 20x20)
-	//arg[2] = snake length (i.e., 4, 5, 6, 7)
-	//arg[3] = block coverage percentage (i.e., 10 -> 10% coverage)
 	public static void main(String args[]) throws InterruptedException {
-		GameBoard gb = new GameBoard("Snake Game", 20, 20);
+		Map m = new Map(50, 50, 10, 20);
+		GameBoard gb = new GameBoard("Snake Game", m);
 		gb.setVisible(true);
-		Map m = new Map();
-		gb.update(m);
+		gb.update();
 		
 		int search = Integer.parseInt(args[0]);
 		for (;;) {
@@ -57,7 +54,7 @@ public class App {
 					e.printStackTrace();
 				}
 				m.moveSnakeInDirection(Coordinate.getDirection(m.getSnake().getPositions().get(0), c));
-				gb.update(m);
+				gb.update();
 			}
 		}
 	}

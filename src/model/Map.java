@@ -24,11 +24,13 @@ public class Map {
 	
 	private int map[][];
 	
+	//5% coverage obstacles
+	//7 snake length
 	public Map(){
 		setRows(20);
 		setColumns(20);
 		setMap(new int[20][20]);
-		cobra = new Snake(7);
+		cobra = new Snake(4);
 		for (int x = 0; x < 20; ++x) {
 			for (int y = 0; y < 20; ++y) {
 				if (x == 0 || y == 0 || x == rows-1 || y == columns-1) {
@@ -44,11 +46,13 @@ public class Map {
 		generateFoodItem();
 	}
 	
-	public Map(int rows, int cols){
+	public Map(int rows, int cols, int snakeLength){
 		setRows(rows);
 		setColumns(cols);
 		setMap(new int[rows][cols]);
-		cobra = new Snake();
+		if (snakeLength < 4) snakeLength = 4;
+		if (snakeLength > ((cols/2)-1)) snakeLength = 7;
+		cobra = new Snake(snakeLength);
 		for (int x = 0; x < rows; ++x) {
 			for (int y = 0; y < cols; ++y) {
 				if (x == 0 || y == 0 || x == rows-1 || y == cols-1) {
@@ -60,7 +64,13 @@ public class Map {
 			}
 		}
 		initSnake();
-		generateObstacles(10);
+		generateFoodItem();
+	}
+	
+	public Map(int rows, int cols, int obstaclePercentage, int snakeLength){
+		this(rows, cols, snakeLength);
+		generateObstacles(obstaclePercentage);
+		map[foodCoordinates.getRow()][foodCoordinates.getCol()] = EMPTY;
 		generateFoodItem();
 	}
 	

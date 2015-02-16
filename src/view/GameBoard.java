@@ -25,6 +25,7 @@ public class GameBoard extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel GUI[][];
+	private Map map;
 	
 	private static Color EMPTY_COLOR = 		Color.white;
 	private static Color SNAKE_HEAD_COLOR = Color.green;
@@ -34,10 +35,11 @@ public class GameBoard extends JFrame {
 	private static Color OBSTACLE_COLOR = 	Color.gray;
 	private static Color BORDER_COLOR = 	Color.darkGray;
 
-	public GameBoard(String title, int rows, int cols) {
+	public GameBoard(String title, Map map) {
 		super(title);
-		GUI = new JLabel[rows][cols];
-		buildWindow(rows, cols);
+		this.map = map;
+		GUI = new JLabel[map.getRows()][map.getColumns()];
+		buildWindow(map.getRows(), map.getRows());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(1000, 1000);
 	}
@@ -69,7 +71,7 @@ public class GameBoard extends JFrame {
 		add(centerPanel);
 	}
 	
-	public void update(Map map){
+	public void update(){
 		for (int x = 0; x < map.getRows(); ++x) {
 			for (int y = 0; y < map.getColumns(); ++y) {
 				switch(map.getMap()[x][y])
@@ -106,10 +108,6 @@ public class GameBoard extends JFrame {
 				
 			}
 		}
-	}
-	
-	public void clearSquare(int x, int y) {
-		GUI[x][y].setForeground(EMPTY_COLOR);
 	}
 	
 	public static void main(String args[]) /* throws InterruptedException */ {
