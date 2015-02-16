@@ -142,8 +142,8 @@ public class Search {
 	}
 	
 	public static int euclideanHeuristicEstimator(Coordinate food, Coordinate node) {
-		int rowDist1 = Math.abs(node.getRow() - food.getRow());
-		int colDist1 = Math.abs(node.getCol() - food.getCol());
+		int rowDist1 = (int) Math.pow(node.getRow() - food.getRow(), 2);
+		int colDist1 = (int) Math.pow(node.getCol() - food.getCol(), 2);
 
 		return (int)(Math.sqrt(rowDist1 + colDist1));
 	}

@@ -20,6 +20,9 @@ public class App {
 	//arg[0] = 3 -> a star heuristic 1
 	//arg[0] = 4 -> a star heuristic 2
 	//arg[0] = 5 -> a star heuristic mix
+	//arg[1] = dimension (i.e., 20 -> 20x20)
+	//arg[2] = snake length (i.e., 4, 5, 6, 7)
+	//arg[3] = block coverage percentage (i.e., 10 -> 10% coverage)
 	public static void main(String args[]) throws InterruptedException {
 		GameBoard gb = new GameBoard("Snake Game", 20, 20);
 		gb.setVisible(true);
@@ -58,5 +61,4 @@ public class App {
 			}
 		}
 	}
-
 }
